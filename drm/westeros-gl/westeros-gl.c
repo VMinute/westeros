@@ -23,7 +23,7 @@
 #include <gbm.h>
 #include <xf86drm.h>
 #include <xf86drmMode.h>
-#include <GLES/gl.h>
+#include <GLES2/gl2.h>
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <errno.h>
@@ -43,7 +43,7 @@
 #endif
 
 typedef EGLDisplay (*PREALEGLGETDISPLAY)(EGLNativeDisplayType);
-typedef EGLSurface (*PREALEGLCREATEWINDOWSURFACE)(EGLDisplay, 
+typedef EGLSurface (*PREALEGLCREATEWINDOWSURFACE)(EGLDisplay,
                                                   EGLConfig,
                                                   EGLNativeWindowType,
                                                   const EGLint *attrib_list);
@@ -111,7 +111,7 @@ EGLAPI EGLDisplay EGLAPIENTRY eglGetDisplay(EGLNativeDisplayType displayId)
    EGLDisplay eglDisplay= EGL_NO_DISPLAY;
 
    printf("westeros-gl: eglGetDisplay: enter: displayId %x\n", displayId);
-   
+
    if ( !g_wstCtx )
    {
       g_wstCtx= WstGLInit();
@@ -121,7 +121,7 @@ EGLAPI EGLDisplay EGLAPIENTRY eglGetDisplay(EGLNativeDisplayType displayId)
    {
       printf("westeros-gl: eglGetDisplay: failed linkage to underlying EGL impl\n" );
       goto exit;
-   }   
+   }
 
    if ( displayId == EGL_DEFAULT_DISPLAY )
    {
@@ -138,7 +138,7 @@ EGLAPI EGLDisplay EGLAPIENTRY eglGetDisplay(EGLNativeDisplayType displayId)
    {
       g_wstCtx->dpy = gRealEGLGetDisplay(displayId);
    }
-   
+
    if ( g_wstCtx->dpy )
    {
       eglDisplay= g_wstCtx->dpy;
@@ -156,7 +156,7 @@ EGLAPI EGLSurface EGLAPIENTRY eglCreateWindowSurface( EGLDisplay dpy, EGLConfig 
    EGLSurface eglSurface= EGL_NO_SURFACE;
    EGLNativeWindowType nativeWindow;
    NativeWindowItem *nwIter;
-    
+
    if ( !gRealEGLCreateWindowSurface )
    {
       printf("westeros-gl: eglCreateWindowSurface: failed linkage to underlying EGL impl\n" );
@@ -177,11 +177,11 @@ EGLAPI EGLSurface EGLAPIENTRY eglCreateWindowSurface( EGLDisplay dpy, EGLConfig 
                break;
             }
          }
-      }    
+      }
    }
 
 exit:
-   
+
    return eglSurface;
 }
 
@@ -195,7 +195,7 @@ EGLAPI EGLBoolean eglSwapBuffers( EGLDisplay dpy, EGLSurface surface )
       printf("westeros-gl: eglSwapBuffers: failed linkage to underlying EGL impl\n" );
       goto exit;
    }
-   
+
    if ( gRealEGLSwapBuffers )
    {
       result= gRealEGLSwapBuffers( dpy, surface );
@@ -210,15 +210,15 @@ EGLAPI EGLBoolean eglSwapBuffers( EGLDisplay dpy, EGLSurface surface )
                break;
             }
         }
-      }    
+      }
    }
-   
+
 exit:
 
    return result;
 }
 
-WstGLCtx* WstGLInit() 
+WstGLCtx* WstGLInit()
 {
    /*
     *  Establish the overloading of a subset of EGL methods
@@ -274,7 +274,7 @@ exit:
    return g_wstCtx;
 }
 
-void WstGLTerm( WstGLCtx *ctx ) 
+void WstGLTerm( WstGLCtx *ctx )
 {
    if ( ctx )
    {
@@ -283,7 +283,7 @@ void WstGLTerm( WstGLCtx *ctx )
          printf("westeros-gl: WstGLTerm: bad ctx %p, should be %p\n", ctx, g_wstCtx );
          return;
       }
-      
+
       --ctx->refCnt;
       if ( ctx->refCnt <= 0 )
       {
@@ -292,37 +292,37 @@ void WstGLTerm( WstGLCtx *ctx )
             gbm_device_destroy(ctx->gbm);
             ctx->gbm= 0;
          }
-         
+
          if ( ctx->drmEncoder )
          {
             drmModeFreeEncoder(ctx->drmEncoder);
             ctx->drmEncoder= 0;
          }
-         
+
          if ( ctx->drmConnector )
          {
             drmModeFreeConnector(ctx->drmConnector);
             ctx->drmConnector= 0;
          }
-         
+
          if ( ctx->drmFd >= 0)
          {
             close( ctx->drmFd );
             ctx->drmFd= -1;
          }
-         
+
          free( ctx );
-         
+
          g_wstCtx= 0;
-      }      
+      }
    }
 }
 
-void* WstGLCreateNativeWindow( WstGLCtx *ctx, int x, int y, int width, int height ) 
+void* WstGLCreateNativeWindow( WstGLCtx *ctx, int x, int y, int width, int height )
 {
    void *nativeWindow= 0;
    NativeWindowItem *nwItem= 0;
-    
+
    if ( !ctx->drmSetup )
    {
      ctx->drmSetup= setupDRM( ctx );
@@ -341,8 +341,8 @@ void* WstGLCreateNativeWindow( WstGLCtx *ctx, int x, int y, int width, int heigh
       nwItem= (NativeWindowItem*)calloc( 1, sizeof(NativeWindowItem) );
       if ( nwItem )
       {
-         nativeWindow= gbm_surface_create(ctx->gbm, 
-                                          width, 
+         nativeWindow= gbm_surface_create(ctx->gbm,
+                                          width,
                                           height,
                                           GBM_FORMAT_XRGB8888,
                                           GBM_BO_USE_SCANOUT | GBM_BO_USE_RENDERING);
@@ -365,20 +365,20 @@ void* WstGLCreateNativeWindow( WstGLCtx *ctx, int x, int y, int width, int heigh
          printf("westeros-gl: WstGLCreateNativeWindow: unable to allocate native window list item\n");
       }
    }
-                 
+
     return nativeWindow;
 }
 
-void WstGLDestroyNativeWindow( WstGLCtx *ctx, void *nativeWindow ) 
+void WstGLDestroyNativeWindow( WstGLCtx *ctx, void *nativeWindow )
 {
    NativeWindowItem *nwIter, *nwPrev;
-    
+
    if ( ctx && nativeWindow )
    {
       struct gbm_surface *gs = nativeWindow;
-       
+
       gbm_surface_destroy( gs );
-       
+
       nwPrev= 0;
       nwIter= ctx->nwFirst;
       while ( nwIter )
@@ -413,27 +413,27 @@ bool WstGLGetNativePixmap( WstGLCtx *ctx, void *nativeBuffer, void **nativePixma
 {
    bool result= false;
    struct gbm_bo *bo;
-   
-   bo= gbm_bo_create( ctx->gbm, 
-                      ctx->modeInfo->hdisplay, 
+
+   bo= gbm_bo_create( ctx->gbm,
+                      ctx->modeInfo->hdisplay,
                       ctx->modeInfo->vdisplay,
-                      GBM_FORMAT_XRGB8888, 
+                      GBM_FORMAT_XRGB8888,
                       GBM_BO_USE_RENDERING | GBM_BO_USE_SCANOUT );
 
    if( bo )
    {
       *nativePixmap= bo;
-      
+
       result= true;
    }
-   
+
    return result;
 }
 
 void WstGLGetNativePixmapDimensions( WstGLCtx *ctx, void *nativePixmap, int *width, int *height )
 {
    struct gbm_bo *bo;
-    
+
    bo= (struct gbm_bo*)nativePixmap;
    if ( bo )
    {
@@ -451,7 +451,7 @@ void WstGLGetNativePixmapDimensions( WstGLCtx *ctx, void *nativePixmap, int *wid
 void WstGLReleaseNativePixmap( WstGLCtx *ctx, void *nativePixmap )
 {
    struct gbm_bo *bo;
-   
+
    bo= (struct gbm_bo*)nativePixmap;
    if ( bo )
    {
@@ -459,7 +459,7 @@ void WstGLReleaseNativePixmap( WstGLCtx *ctx, void *nativePixmap )
    }
 }
 
-void* WstGLGetEGLNativePixmap( WstGLCtx *ctx, void *nativePixmap ) 
+void* WstGLGetEGLNativePixmap( WstGLCtx *ctx, void *nativePixmap )
 {
    return nativePixmap;
 }
@@ -481,7 +481,7 @@ static void page_flip_event_handler(int fd, unsigned int frame,
 }
 #endif
 
-static void swapDRMBuffers(void* nativeBuffer) 
+static void swapDRMBuffers(void* nativeBuffer)
 {
    struct gbm_surface* surface;
    struct gbm_bo *bo;
@@ -499,7 +499,7 @@ static void swapDRMBuffers(void* nativeBuffer)
    fd_set fds;
    drmEventContext ev;
    #endif
-   
+
    if ( g_wstCtx )
    {
       if ( g_wstCtx->drmSetup )
@@ -508,7 +508,7 @@ static void swapDRMBuffers(void* nativeBuffer)
          if ( surface )
          {
             bo= gbm_surface_lock_front_buffer(surface);
-            
+
             handle= gbm_bo_get_handle(bo).u32;
             stride = gbm_bo_get_stride(bo);
 
@@ -713,18 +713,18 @@ static bool setupDRM( WstGLCtx *ctx )
    drmModeConnector *conn= 0;
    drmModeCrtc *crtc= 0;
    int i, mi= 0;
-   
+
    card= getenv("WESTEROS_DRM_CARD");
    if ( !card )
    {
       card= DEFAULT_CARD;
    }
-   
+
    if ( ctx->drmFd < 0 )
    {
       ctx->drmFd= open(card, O_RDWR);
    }
-   
+
    if ( ctx->drmFd < 0 )
    {
       printf("westeros-gl: setupDrm: unable open card (%s)\n", card );
@@ -739,31 +739,31 @@ static bool setupDRM( WstGLCtx *ctx )
          conn= drmModeGetConnector( ctx->drmFd, res->connectors[i] );
          if ( conn )
          {
-            if ( (conn->connection == DRM_MODE_CONNECTED) && 
+            if ( (conn->connection == DRM_MODE_CONNECTED) &&
                  (conn->count_modes > 0) )
             {
                break;
             }
-            
+
             drmModeFreeConnector(conn);
             conn= 0;
          }
-      }      
+      }
    }
    else
    {
       printf("westeros-gl: setupDrm: unable to access drm resources for card (%s)\n", card);
    }
-   
+
    if ( !conn )
    {
       printf("westeros-gl: setupDrm: unable to access a drm connector for card (%s)\n", card);
       goto exit;
    }
-   
+
    ctx->drmRes= res;
    ctx->drmConnector= conn;
-   
+
    ctx->gbm= gbm_create_device( ctx->drmFd );
    if ( ctx->gbm )
    {
@@ -783,7 +783,7 @@ static bool setupDRM( WstGLCtx *ctx )
       {
          EGLint major, minor;
          EGLBoolean b;
-         
+
          b= eglInitialize( ctx->dpy, &major, &minor );
          if ( !b )
          {
@@ -797,20 +797,20 @@ static bool setupDRM( WstGLCtx *ctx )
       printf("westeros-gl: setupDrm: unable to create gbm device for card (%s)\n", card);
       goto exit;
    }
-   
+
    /* List all reported display modes */
    conn= ctx->drmConnector;
    for( i= 0; i < conn->count_modes; ++i )
    {
-      printf("westeros_gl: setupDrm: mode %d: %dx%dx%d (%s) type 0x%x flags 0x%x\n", i, conn->modes[i].hdisplay, conn->modes[i].vdisplay, 
+      printf("westeros_gl: setupDrm: mode %d: %dx%dx%d (%s) type 0x%x flags 0x%x\n", i, conn->modes[i].hdisplay, conn->modes[i].vdisplay,
              conn->modes[i].vrefresh, conn->modes[i].name, conn->modes[i].type, conn->modes[i].flags );
       #ifdef WESTEROS_PLATFORM_QEMUX86
-      if ( (conn->modes[i].hdisplay == DEFAULT_MODE_WIDTH) && 
-           (conn->modes[i].vdisplay == DEFAULT_MODE_HEIGHT) && 
+      if ( (conn->modes[i].hdisplay == DEFAULT_MODE_WIDTH) &&
+           (conn->modes[i].vdisplay == DEFAULT_MODE_HEIGHT) &&
            (conn->modes[i].type & DRM_MODE_TYPE_DRIVER) )
-      {       
+      {
          mi= i;
-      }       
+      }
       #endif
    }
    printf("westeros_gl: default DRM mode: %d\n", mi );
@@ -829,11 +829,11 @@ static bool setupDRM( WstGLCtx *ctx )
          ctx->drmEncoder= 0;
       }
    }
-   
+
    if ( ctx->drmEncoder )
    {
       result= true;
-      
+
       crtc= drmModeGetCrtc(ctx->drmFd, ctx->drmEncoder->crtc_id);
       if ( crtc && crtc->mode_valid )
       {
@@ -882,7 +882,7 @@ exit:
          drmModeFreeResources( res );
       }
    }
-   
+
    return result;
 }
 
@@ -896,4 +896,3 @@ static void destroyGbmCtx( struct gbm_bo *bo, void *userData )
       free( gbmCtx );
    }
 }
-

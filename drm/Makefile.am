@@ -19,11 +19,11 @@
 
 AUTOMAKE_OPTIONS = subdir-objects
 
-SUBDIRS = 
+SUBDIRS =
 
-AM_CFLAGS = 
+AM_CFLAGS = $(LIBDRM_CFLAGS)
 
-AM_LDFLAGS = 
+AM_LDFLAGS =
 
 lib_LTLIBRARIES = libwesteros_gl.la
 
@@ -31,7 +31,7 @@ libwesteros_gl_la_SOURCES = westeros-gl/westeros-gl.c
 
 libwesteros_gl_la_include_HEADERS = westeros-gl/westeros-gl.h
 libwesteros_gl_la_includedir = $(includedir)
-libwesteros_gl_la_CFLAGS= $(AM_CFLAGS) -D_GNU_SOURCE 
+libwesteros_gl_la_CFLAGS= $(AM_CFLAGS) -D_GNU_SOURCE
 
 libwesteros_gl_la_LDFLAGS= \
    $(AM_LDFLAGS) \
@@ -39,7 +39,7 @@ libwesteros_gl_la_LDFLAGS= \
    -lgbm
 
 pkgconfigdir = $(libdir)/pkgconfig
-   
+
 distcleancheck_listfiles = *-libtool
 
 ## IPK Generation Support
@@ -59,4 +59,3 @@ package_ipk:
 	rm -rf ${abs_top_builddir}/staging_dir
 	rm -rf $(abs_top_builddir)/ipk/control.tar.gz
 	rm -rf $(abs_top_builddir)/ipk/data.tar.gz
-
