@@ -84,7 +84,7 @@ westeros_SOURCES = westeros-main.cpp
 westeros_LDFLAGS= \
    $(AM_LDFLAGS)
 
-westeros_LDADD=
+westeros_LDADD= \
    $(WAYLAND_SERVER_LIBS) \
    -lwesteros_compositor
 if !ENABLE_PLATFORM_EMBEDDED
