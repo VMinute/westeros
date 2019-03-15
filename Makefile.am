@@ -24,7 +24,7 @@ AM_CXXFLAGS= \
 	-I$(top_srcdir)/include \
    -I${PKG_CONFIG_SYSROOT_DIR}/$(includedir)/wayland \
    $(WAYLAND_CLIENT_CFLAGS) $(WAYLAND_SERVER_CFLAGS) \
-   $(XKBCOMMON_CFLAGS)   
+   $(XKBCOMMON_CFLAGS)
 AM_LDFLAGS=$(WAYLANDLIB)
 
 ## --- Configurtion -------
@@ -59,10 +59,10 @@ AM_CFLAGS = $(AM_CXXFLAGS) -Wno-deprecated-declarations
 
 BUILT_SOURCES= libwesteros_compositor.la \
                libwesteros_render_embedded.la
-               
+
 if ENABLE_WESTEROS_RENDERERGL
 BUILT_SOURCES += libwesteros_render_gl.la
-endif               
+endif
 
 bin_PROGRAMS =
 
@@ -86,7 +86,7 @@ westeros_LDFLAGS= \
    $(WAYLAND_SERVER_LIBS) \
    -lwesteros_compositor
 if !ENABLE_PLATFORM_EMBEDDED
-westeros_LDFLAGS += -lglut -lGL -lGLEW -lX11 -lEGL
+westeros_LDFLAGS += -lglut -lGL -lGLEW -lX11 -lEGL -lpthread
 endif
 if ENABLE_PLATFORM_EMBEDDED
 westeros_LDFLAGS += -lEGL -lwesteros_gl
@@ -107,7 +107,7 @@ westeros_test_LDFLAGS= \
    -lEGL
 if !ENABLE_PLATFORM_EMBEDDED
 westeros_test_LDFLAGS += -lGL -lGLEW
-endif   
+endif
 
 ## --- Sample player -------
 westeros_player_SOURCES = westeros-player.cpp
