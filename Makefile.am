@@ -91,7 +91,7 @@ if !ENABLE_PLATFORM_EMBEDDED
 westeros_LDADD += -lglut -lGL -lGLEW -lX11 -lEGL -lpthread
 endif
 if ENABLE_PLATFORM_EMBEDDED
-westeros_LDADD += -lEGL -lwesteros_gl
+westeros_LDADD += -lEGL -lwesteros_gl -lpthread
 if HAVE_WAYLAND_EGL
 westeros_LDADD += -lGLESv2
 endif
