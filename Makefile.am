@@ -82,16 +82,18 @@ endif
 westeros_SOURCES = westeros-main.cpp
 
 westeros_LDFLAGS= \
-   $(AM_LDFLAGS) \
+   $(AM_LDFLAGS)
+
+westeros_LDADD=
    $(WAYLAND_SERVER_LIBS) \
    -lwesteros_compositor
 if !ENABLE_PLATFORM_EMBEDDED
-westeros_LDFLAGS += -lglut -lGL -lGLEW -lX11 -lEGL -lpthread
+westeros_LDADD += -lglut -lGL -lGLEW -lX11 -lEGL -lpthread
 endif
 if ENABLE_PLATFORM_EMBEDDED
-westeros_LDFLAGS += -lEGL -lwesteros_gl
+westeros_LDADD += -lEGL -lwesteros_gl
 if HAVE_WAYLAND_EGL
-westeros_LDFLAGS += -lGLESv2
+westeros_LDADD += -lGLESv2
 endif
 endif
 
