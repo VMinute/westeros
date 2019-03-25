@@ -58,7 +58,9 @@ endif
 AM_CFLAGS = $(AM_CXXFLAGS) -Wno-deprecated-declarations
 
 BUILT_SOURCES= libwesteros_compositor.la \
-               libwesteros_render_embedded.la
+IF ENABLE_PLATFORM_EMBEDDED
+BUILT_SOURCES += libwesteros_render_embedded.la
+endif
 
 if ENABLE_WESTEROS_RENDERERGL
 BUILT_SOURCES += libwesteros_render_gl.la
@@ -123,7 +125,9 @@ westeros_player_LDFLAGS= \
 
 ## --- Compositor -------
 lib_LTLIBRARIES = libwesteros_compositor.la \
-                  libwesteros_render_embedded.la
+if ENABLE_PLATFORM_EMBEDDED
+lib_LTLIBRARIES += libwesteros_render_embedded.la
+endif
 
 if ENABLE_WESTEROS_RENDERERGL
 lib_LTLIBRARIES += libwesteros_render_gl.la
