@@ -172,5 +172,5 @@ westeros-drm:
 westeros-core:
 	$(call setenv) && \
     autoreconf -vif && \
-	./configure --host=arm-linux-gnueabihf  --prefix $(WID) --enable-${XDGOPT} --enable-drm --enable-rendergl --enable-app --enable-test --enable-embedded=no --enable-sbprotocol=yes --enable-gstreamer1=yes && \
+	./configure --host=arm-linux-gnueabihf  --prefix $(WID) --enable-${XDGOPT} --enable-drm --enable-rendergl --enable-app --enable-test --enable-embedded=no --enable-sbprotocol=no --enable-gstreamer1=yes && \
 	make --trace && make install
