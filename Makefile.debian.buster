@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-WID=/westeros/setup/usr
+WID=/usr
 XDGOPT ?= xdgv5
 
 all:  externals westeros-protocols westeros-simpleshell westeros-simplebuffer westeros-drm westeros-core
