@@ -22,7 +22,7 @@
 WID=/usr
 XDGOPT ?= xdgv5
 
-all:  externals westeros-protocols westeros-simpleshell westeros-simplebuffer westeros-drm westeros-core
+all:  externals westeros-protocols westeros-simpleshell westeros-drm westeros-core
 
 clean: init
 
