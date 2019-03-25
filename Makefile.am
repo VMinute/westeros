@@ -58,7 +58,7 @@ endif
 AM_CFLAGS = $(AM_CXXFLAGS) -Wno-deprecated-declarations
 
 BUILT_SOURCES= libwesteros_compositor.la \
-IF ENABLE_PLATFORM_EMBEDDED
+if ENABLE_PLATFORM_EMBEDDED
 BUILT_SOURCES += libwesteros_render_embedded.la
 endif
 
